@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package admin
 
 import (
@@ -29,7 +26,7 @@ var (
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add new admin to Music Server",
-	Long:  `Add new admin to your server`,
+	Long:  `Add new admin to Music Server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		token, err := addAdmin()
 		if err == nil {
@@ -41,8 +38,8 @@ var addCmd = &cobra.Command{
 func init() {
 	AdminCmd.AddCommand(addCmd)
 
-	addCmd.Flags().StringVarP(&username, "username", "u", "", "username for new admin")
-	addCmd.Flags().StringVarP(&password, "password", "p", "", "password for new admin")
+	addCmd.Flags().StringVarP(&username, "username", "u", "", "Username for new admin")
+	addCmd.Flags().StringVarP(&password, "password", "p", "", "Password for new admin")
 
 	if err := addCmd.MarkFlagRequired("username"); err != nil {
 		fmt.Println(err)
@@ -53,8 +50,9 @@ func init() {
 
 }
 
+// addAdmin adds new admin to music server
 func addAdmin() (string, error) {
-
+	//get user id from adding new user
 	id, err := addUser()
 
 	if err != nil {
@@ -82,17 +80,15 @@ func addAdmin() (string, error) {
 		log.Error("error while reading the response bytes adding admin")
 		return "", err
 	}
-
-	answ := make(map[string]bool, 1)
+	var answ addAdminStr
 
 	json.Unmarshal(body, &answ)
 
-	if !answ["Added"] {
-		errorAdd := make(map[string]string, 1)
-		json.Unmarshal(body, &errorAdd)
-		return "", fmt.Errorf("error adding admin: %s", errorAdd["Error"])
+	if !answ.Added {
+		return "", fmt.Errorf("error adding admin: %s", answ.Error)
 	}
 
+	//trying to login to just added user
 	token, err := login()
 	if err != nil {
 		log.Error(err)
@@ -100,6 +96,11 @@ func addAdmin() (string, error) {
 	}
 
 	return token, nil
+}
+
+type addAdminStr struct {
+	Added bool   `json:"Added,omitempty"`
+	Error string `json:"Error,omitempty"`
 }
 
 func addUser() ([]byte, error) {
@@ -127,15 +128,19 @@ func addUser() ([]byte, error) {
 		return []byte{}, fmt.Errorf("error while reading the response bytes adding new user")
 	}
 
-	regErr := make(map[string]string)
+	var regErr addUserStr
 
 	json.Unmarshal(body, &regErr)
 
-	if regErr["Error"] != "" {
-		return []byte{}, fmt.Errorf("error creating new user: %s", regErr["Error"])
+	if regErr.Error != "" {
+		return []byte{}, fmt.Errorf("error creating new user: %s", regErr.Error)
 	}
 
 	return body, nil
+}
+
+type addUserStr struct {
+	Error string `json:"Error,omitempty"`
 }
 
 func login() (string, error) {
@@ -163,12 +168,17 @@ func login() (string, error) {
 		return "", fmt.Errorf("error while reading the response bytes logging in")
 	}
 
-	tokenRaw := make(map[string]string, 1)
+	var tokenRaw loginStr
 	json.Unmarshal(body, &tokenRaw)
 
-	if tokenRaw["token"] == "" {
-		return "", fmt.Errorf("unable to log in")
+	if tokenRaw.Token == "" {
+		return "", fmt.Errorf("unable to log in: %v", tokenRaw.Error)
 	}
 
-	return tokenRaw["token"], nil
+	return tokenRaw.Token, nil
+}
+
+type loginStr struct {
+	Token string `json:"token,omitempty"`
+	Error string `json:"Error,omitempty"`
 }
