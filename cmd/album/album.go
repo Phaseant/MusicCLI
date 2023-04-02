@@ -10,8 +10,8 @@ import (
 // AlbumCmd represents the album command
 var AlbumCmd = &cobra.Command{
 	Use:   "album",
-	Short: "Comand palettes to manage albums",
-	Long:  `Long description`,
+	Short: "Commands to manage albums",
+	Long:  `Commands to manage albums`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},

@@ -12,7 +12,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "MusicCLI",
 	Short: "Admin panel to manage Music Server",
-	Long:  `Long description`,
+	Long:  `Admin panel to manage Music Server`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

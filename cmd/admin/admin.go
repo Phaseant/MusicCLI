@@ -10,8 +10,8 @@ import (
 // AdminCmd represents the admin command
 var AdminCmd = &cobra.Command{
 	Use:   "admin",
-	Short: "Admin panel to manage admins",
-	Long:  `Long description`,
+	Short: "Command to manage admins",
+	Long:  `Command to manage admins`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
