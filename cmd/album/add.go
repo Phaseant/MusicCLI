@@ -69,19 +69,21 @@ func addAlbum() error {
 		return err
 	}
 
-	jsonResp := make(map[string]string, 1)
+	jsonResp := []map[string]string{}
 
 	if err := json.Unmarshal(body, &jsonResp); err != nil {
 		log.Errorf("unable to unmarshal json: %v", err)
 		return err
 	}
+	for _, album := range jsonResp {
 
-	if jsonResp["Error"] != "" {
-		log.Errorf("unable to add album: %v", jsonResp["Error"])
-		return errors.New(jsonResp["Error"])
+		if album["Error"] != "" {
+			log.Errorf("unable to add album: %v", album["error"])
+			return errors.New(album["error"])
+		}
+
+		fmt.Printf("Added album with id: %s", album["id"])
 	}
-
-	fmt.Printf("Added album with id: %s", jsonResp["ID"])
 	return nil
 }
 

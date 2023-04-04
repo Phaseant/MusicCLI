@@ -78,6 +78,6 @@ func deleteAlbum() {
 }
 
 type errDel struct {
-	Deleted bool   `json:"Deleted"`
-	Error   string `json:"Error"`
+	Deleted bool   `json:"deleted"`
+	Error   string `json:"error"`
 }

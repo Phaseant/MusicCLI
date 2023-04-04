@@ -99,8 +99,8 @@ func addAdmin() (string, error) {
 }
 
 type addAdminStr struct {
-	Added bool   `json:"Added,omitempty"`
-	Error string `json:"Error,omitempty"`
+	Added bool   `json:"added,omitempty"`
+	Error string `json:"error,omitempty"`
 }
 
 func addUser() ([]byte, error) {
@@ -140,7 +140,7 @@ func addUser() ([]byte, error) {
 }
 
 type addUserStr struct {
-	Error string `json:"Error,omitempty"`
+	Error string `json:"error,omitempty"`
 }
 
 func login() (string, error) {
