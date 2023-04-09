@@ -69,22 +69,25 @@ func addAlbum() error {
 		return err
 	}
 
-	jsonResp := []map[string]string{}
+	albumResp := AlbumAddedResp{}
 
-	if err := json.Unmarshal(body, &jsonResp); err != nil {
+	if err := json.Unmarshal(body, &albumResp); err != nil {
 		log.Errorf("unable to unmarshal json: %v", err)
 		return err
 	}
-	for _, album := range jsonResp {
 
-		if album["Error"] != "" {
-			log.Errorf("unable to add album: %v", album["error"])
-			return errors.New(album["error"])
-		}
-
-		fmt.Printf("Added album with id: %s", album["id"])
+	if !albumResp.Added {
+		log.Errorf("unable to add album: %v", albumResp.Error)
+		return errors.New(albumResp.Error)
 	}
+	fmt.Printf("Added album with id: %s", albumResp.Id)
 	return nil
+}
+
+type AlbumAddedResp struct {
+	Error string `json:"error,omitempty"`
+	Added bool   `json:"added,omitempty"`
+	Id    string `json:"id,omitempty"`
 }
 
 func openFile() ([]byte, error) {
